@@ -1,0 +1,12 @@
+services:
+  db:
+    container_name: surrealdb
+    image: surrealdb/surrealdb:latest-dev
+    ports:
+      - "8000:8000"
+    command: start
+    networks:
+      - surrealdb
+networks:
+  surrealdb:
+    driver: bridge
