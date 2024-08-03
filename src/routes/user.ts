@@ -1,4 +1,6 @@
 import { Hono } from "hono";
+import { HTTPException } from "hono/http-exception";
+import { RecordId } from "surrealdb.js";
 import { type User, getDatabase, initDatabase } from "../utils/surrealdb";
 
 export const userRoutes = new Hono();
@@ -12,14 +14,40 @@ if (!surrealdb) {
 
 userRoutes.get("/", async (c) => {
     const users = await surrealdb.select<User>("users");
-    users.sort((a, b) => a.username.localeCompare(b.username));
 
     return c.json(
         users.map((user) => {
-            const { password_hash, id, ...rest } = user;
-            return rest;
+            return {
+                id: user.id.id,
+                username: user.username,
+                email: user.email,
+            };
         }),
     );
+});
+
+userRoutes.get("/:id", async (c) => {
+    const id = c.req.param("id");
+
+    if (!id) {
+        throw new HTTPException(400, {
+            message: "Missing id",
+        });
+    }
+
+    const user = await surrealdb.select<User>(new RecordId("users", id));
+
+    if (!user) {
+        throw new HTTPException(404, {
+            message: "User not found",
+        });
+    }
+
+    return c.json({
+        id: user.id.id,
+        username: user.username,
+        email: user.email,
+    });
 });
 
 export default userRoutes;
