@@ -4,7 +4,11 @@ services:
     image: surrealdb/surrealdb:latest-dev
     ports:
       - "8000:8000"
-    command: start
+    # temporary use root as user
+    user: root
+    volumes:
+      - ./data:/data
+    command: start file:/data/mydatabase.db
     networks:
       - surrealdb
 networks:

@@ -10,6 +10,9 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "surrealdb.js": "^1.0.0-beta.9"
+    "@hono/zod-validator": "^0.2.2",
+    "hono": "^4.5.3",
+    "surrealdb.js": "^1.0.0-beta.9",
+    "zod": "^3.23.8"
   }
 }
