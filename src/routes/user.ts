@@ -89,4 +89,45 @@ userRoutes.post("/", validationCreateUser, async (c) => {
     });
 });
 
+const validateUpdateUser = zValidator(
+    "json",
+    z.object({
+        username: z.string(),
+        email: z.string().email().optional(),
+    }),
+);
+
+userRoutes.put("/:id", validateUpdateUser, async (c) => {
+    const id = c.req.param("id");
+    const body = c.req.valid("json");
+
+    if (!id) {
+        throw new HTTPException(400, {
+            message: "Missing id",
+        });
+    }
+
+    const data: Partial<User> = {
+        username: body.username,
+    };
+
+    if (body.email) {
+        data.email = body.email;
+    }
+
+    try {
+        await surrealdb.merge<User>(new RecordId("users", id), data);
+    } catch (error) {
+        console.error(error);
+
+        throw new HTTPException(400, {
+            message: "Failed to update user",
+        });
+    }
+
+    return c.json({
+        message: "User updated",
+    });
+});
+
 export default userRoutes;
