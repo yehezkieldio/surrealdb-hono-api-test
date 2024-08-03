@@ -1,10 +1,10 @@
-import Surreal from "surrealdb.js";
+import Surreal, { ResponseError } from "surrealdb.js";
 
 export type User = {
     username: string;
     email: string;
     password_hash: string;
-}
+};
 
 let db: Surreal | undefined;
 
@@ -13,13 +13,24 @@ export async function initDatabase(): Promise<Surreal> {
     db = new Surreal();
 
     try {
-        await db.connect("http://127.0.0.1:8000/rpc");
-
-        await db.use({ namespace: "test", database: "test" });
+        await db.connect("http://127.0.0.1:8000/rpc", {
+            auth: {
+                username: "root",
+                password: "root",
+            },
+            database: "test",
+            namespace: "test",
+        });
 
         return db;
     } catch (error) {
-        console.error(error);
+        if (error instanceof ResponseError) {
+            if (error.message.includes("already exists")) {
+                return db;
+            }
+
+            throw error;
+        }
         throw error;
     }
 }
