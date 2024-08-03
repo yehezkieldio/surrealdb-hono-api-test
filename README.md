@@ -1,4 +1,4 @@
-# surrealdb-hono-todo-api
+# surrealdb-hono-api
 
 To install dependencies:
 

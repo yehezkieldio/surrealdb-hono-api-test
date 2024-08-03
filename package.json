@@ -1,18 +1,18 @@
 {
-  "name": "surrealdb-hono-todo-api",
-  "module": "src/index.ts",
-  "type": "module",
-  "devDependencies": {
-    "@biomejs/biome": "^1.8.3",
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  },
-  "dependencies": {
-    "@hono/zod-validator": "^0.2.2",
-    "hono": "^4.5.3",
-    "surrealdb.js": "^1.0.0-beta.9",
-    "zod": "^3.23.8"
-  }
+    "name": "surrealdb-hono-api",
+    "module": "src/index.ts",
+    "type": "module",
+    "devDependencies": {
+        "@biomejs/biome": "^1.8.3",
+        "@types/bun": "latest"
+    },
+    "peerDependencies": {
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "@hono/zod-validator": "^0.2.2",
+        "hono": "^4.5.3",
+        "surrealdb.js": "^1.0.0-beta.9",
+        "zod": "^3.23.8"
+    }
 }
