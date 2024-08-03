@@ -130,4 +130,36 @@ userRoutes.put("/:id", validateUpdateUser, async (c) => {
     });
 });
 
+userRoutes.delete("/:id", async (c) => {
+    const id = c.req.param("id");
+
+    if (!id) {
+        throw new HTTPException(400, {
+            message: "Missing id",
+        });
+    }
+
+    const user = await surrealdb.select<User>(new RecordId("users", id));
+
+    if (!user) {
+        throw new HTTPException(404, {
+            message: "User not found",
+        });
+    }
+
+    try {
+        await surrealdb.delete(new RecordId("users", id));
+    } catch (error) {
+        console.error(error);
+
+        throw new HTTPException(400, {
+            message: "Failed to delete user",
+        });
+    }
+
+    return c.json({
+        message: "User deleted",
+    });
+});
+
 export default userRoutes;
