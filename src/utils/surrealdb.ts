@@ -6,6 +6,14 @@ export type User = {
     password_hash: string;
 };
 
+interface TableInfo {
+    events: Record<string, string>;
+    fields: Record<string, string>;
+    indexes: Record<string, string>;
+    lives: Record<string, string>;
+    tables: Record<string, string>;
+}
+
 let db: Surreal | undefined;
 
 export async function initDatabase(): Promise<Surreal> {
@@ -21,6 +29,13 @@ export async function initDatabase(): Promise<Surreal> {
             database: "test",
             namespace: "test",
         });
+
+        const userInfo = await db.query<TableInfo[]>("INFO FOR TABLE users;");
+
+        if (Object.keys(userInfo[0].indexes).length === 0) {
+            await db.query("DEFINE INDEX IF NOT EXISTS userUsernameIndex ON users COLUMNS username UNIQUE;");
+            await db.query("DEFINE INDEX IF NOT EXISTS userEmailIndex ON users COLUMNS email UNIQUE;");
+        }
 
         return db;
     } catch (error) {
